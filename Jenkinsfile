@@ -3,7 +3,7 @@ pipeline {
     agent any 
     
     environment {
-        registry = public.ecr.aws/v8e9z7z8/desafio
+        registry = "public.ecr.aws/v8e9z7z8/desafio"
     }
     
     stages {
