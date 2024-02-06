@@ -25,5 +25,15 @@ pipeline {
                 }
             }
         }
+       
+        stage ('Docker Push') {
+
+            steps {
+                script { 
+                    sh 'aws ecr get-login-password --region region | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.region.amazonaws.com'
+                    sh ' sh 'docker push public.ecr.aws/v8e9z7z8/desafio:latest'
+                }
+            }
+        }
     }
 }
