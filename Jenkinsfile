@@ -18,6 +18,12 @@ pipeline {
         }
         
         stage ('INFRA as Code AWS') {
+
+        environment {
+            AWS_ACCESS_KEY_ID = credencials('AWS_ACCESS_KEY_ID')
+            AWS_SECRET_ACCESS_KEY = credencials('AWS_SECRET_ACCESS_KEY')
+            AWS_REGION = credencials('AWS_REGION')
+        }
             
             steps {
                 
