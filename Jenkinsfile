@@ -4,6 +4,10 @@ pipeline {
     
     environment {
         registry = "public.ecr.aws/v8e9z7z8/desafio"
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_REGION = credentials('AWS_REGION')
+     
     }
     
     stages {
@@ -19,12 +23,6 @@ pipeline {
         
         stage ('INFRA as Code AWS') {
 
-        environment {
-            AWS_ACCESS_KEY_ID = credencials('AWS_ACCESS_KEY_ID')
-            AWS_SECRET_ACCESS_KEY = credencials('AWS_SECRET_ACCESS_KEY')
-            AWS_REGION = credencials('AWS_REGION')
-        }
-            
             steps {
                 
                 dir('terraform') {
