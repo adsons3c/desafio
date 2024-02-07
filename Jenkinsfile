@@ -7,7 +7,7 @@ pipeline {
     }
     
     stages {
-        
+
         stage ('Checkout') {
             
             steps {
@@ -16,24 +16,33 @@ pipeline {
                 sh 'ls'
             }
         }
-
-        stage ('Docker Build') {
-
+        
+        stage ('INFRA as Code AWS') {
+            
             steps {
-                script { 
-                    dockerImage = docker.build registry
-                }
+                
+                sh 'terraform init'
+                sh 'terraform apply'
             }
         }
+
+        // stage ('Docker Build') {
+
+        //     steps {
+        //         script { 
+        //             dockerImage = docker.build registry
+        //         }
+        //     }
+        // }
        
-        stage ('Docker Push') {
+        // stage ('Docker Push') {
 
-            steps {
-                script {
-                    sh 'aws ecr-public get-login-password --region us-east-1  | docker login --username AWS --password-stdin public.ecr.aws'
-                    sh 'docker push public.ecr.aws/v8e9z7z8/desafio:latest'
-                }
-            }
-        }
+        //     steps {
+        //         script {
+        //             sh 'aws ecr-public get-login-password --region us-east-1  | docker login --username AWS --password-stdin public.ecr.aws'
+        //             sh 'docker push public.ecr.aws/v8e9z7z8/desafio:latest'
+        //         }
+        //     }
+        // }
     }
 }
