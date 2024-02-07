@@ -21,6 +21,7 @@ pipeline {
             
             steps {
                 
+                dir('terraform')
                 sh 'terraform init'
                 sh 'terraform apply'
             }
