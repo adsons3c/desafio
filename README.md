@@ -8,7 +8,6 @@ Para executar a aplicação, basta executar:
 
 Caso queira gerar o JAR, ao invés disso, basta executar:
 
-```bash
 
 Para fazer o build, basta executar:
 
