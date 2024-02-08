@@ -3,3 +3,4 @@ RUN microdnf install findutils
 COPY . /usr/src/myapp
 WORKDIR /usr/src/myapp
 CMD ["./gradlew", "bootRun"]
+EXPOSE 8080
