@@ -7,12 +7,12 @@ terraform {
   }
 }
 
-# Configure the AWS Provider
+# Configuração AWS Provider
 provider "aws" {
   region = "us-east-1"
 }
 
-# Create a VPC
+# Criando a VPC
 data "aws_availability_zones" "available" { state = "available" }
 
 locals {
@@ -27,6 +27,7 @@ resource "aws_vpc" "main" {
   tags                 = { Name = "desafio-vpc" }
 }
 
+# Criando as subnets 
 resource "aws_subnet" "public" {
   count                   = local.azs_count
   vpc_id                  = aws_vpc.main.id
@@ -36,7 +37,7 @@ resource "aws_subnet" "public" {
   tags                    = { Name = "desafio-public-${local.azs_names[count.index]}" }
 }
 
-# Internet Gateway 
+# Criando o Internet Gateway 
 
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
@@ -49,7 +50,7 @@ resource "aws_eip" "main" {
   tags       = { Name = "desafio-eip-${local.azs_names[count.index]}" }
 }
 
-# Route Table 
+# Criando Route Table para as subnets
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
@@ -67,15 +68,13 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-# ECS Clsuter
+# Criado o Cluster ECS 
 
 resource "aws_ecs_cluster" "main" {
   name = "desafio-cluster"
 }
 
-
-# Node Role
-
+# Criando uma Node Role 
 
 data "aws_iam_policy_document" "ecs_node_doc" {
   statement {
@@ -105,7 +104,7 @@ resource "aws_iam_instance_profile" "ecs_node" {
   role        = aws_iam_role.ecs_node_role.name
 }
 
-# Security Group 
+# Criando um Security Group para liberar a internet 
 
 resource "aws_security_group" "ecs_node_sg" {
   name_prefix = "desafio-ecs-node-sg-"
@@ -118,7 +117,8 @@ resource "aws_security_group" "ecs_node_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-# Launch Template
+
+# Criando Launch Template como a definição da VM 
 
 data "aws_ssm_parameter" "ecs_node_ami" {
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
@@ -140,7 +140,7 @@ resource "aws_launch_template" "ecs_ec2" {
   )
 }
 
-# ASG
+# Criando o ASG
 
 resource "aws_autoscaling_group" "ecs" {
   name_prefix               = "desafio-ecs-asg-"
@@ -169,7 +169,7 @@ resource "aws_autoscaling_group" "ecs" {
   }
 }
 
-# Capacity Provider
+# Criando Capacity Provider com a necessidade do projeto 
 
 resource "aws_ecs_capacity_provider" "main" {
   name = "desafio-ecs-ec2"
@@ -198,7 +198,7 @@ resource "aws_ecs_cluster_capacity_providers" "main" {
   }
 }
 
-# Task Role
+# Criando a Task Role
 
 data "aws_iam_policy_document" "ecs_task_doc" {
   statement {
@@ -228,7 +228,7 @@ resource "aws_iam_role_policy_attachment" "ecs_exec_role_policy" {
 }
 
 
-# Task Definition
+# Criando a Task Definition
 
 resource "aws_ecs_task_definition" "app" {
   family             = "desafio-app"
@@ -251,7 +251,7 @@ resource "aws_ecs_task_definition" "app" {
   }])
 }
 
-# ECS Service
+# Criando ECS Service
 
 resource "aws_security_group" "ecs_task" {
   name_prefix = "ecs-task-sg-"
@@ -308,7 +308,7 @@ resource "aws_ecs_service" "app" {
   }
 }
 
-# ALB
+# Criando o ALB
 
 resource "aws_security_group" "http" {
   name_prefix = "http-sg-"
@@ -387,7 +387,7 @@ output "alb_url" {
   value = aws_lb.main.dns_name
 }
 
-# Auto Scaling
+# Criando o Auto Scaling
 
 resource "aws_appautoscaling_target" "ecs_target" {
   service_namespace  = "ecs"
@@ -432,6 +432,8 @@ resource "aws_appautoscaling_policy" "ecs_target_memory" {
     scale_out_cooldown = 300
   }
 }
+
+Criando a entrada no Route 53 
 
 resource "aws_route53_zone" "primary" {
   
