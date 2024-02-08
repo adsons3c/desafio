@@ -41,15 +41,15 @@ pipeline {
             }
         }
 
-        stage ('INFRA as Code AWS') {
+        // stage ('INFRA as Code AWS') {
 
-            steps {
+        //     steps {
                 
-                dir('terraform') {
-                    sh 'terraform init'
-                    sh 'terraform destroy -auto-approve'
-                }
-            }
-        }
+        //         dir('terraform') {
+        //             sh 'terraform init'
+        //             sh 'terraform destroy -auto-approve'
+        //         }
+        //     }
+        // }
     }
 }
